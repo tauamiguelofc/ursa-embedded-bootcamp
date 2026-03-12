@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URSA Embedded Bootcamp | Do Zero ao Projeto Real</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0A1128;
+            --petroleo: #0F4C5C;
+            --text-light: #F4F1DE;
+            --cta-orange: #E07A5F;
+            --card-bg: rgba(15, 76, 92, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Inter', sans-serif; }
+
+        /* NAV MENU */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            background: rgba(10, 17, 40, 0.95);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--petroleo);
+            backdrop-filter: blur(10px);
+        }
+        nav .logo { font-family: 'Inter'; font-weight: 800; font-size: 1.5rem; color: var(--text-light); }
+        nav .logo span { color: var(--cta-orange); }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav a { color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+        nav a:hover { color: var(--cta-orange); }
+
+        /* PARTICLES BG */
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; top: 0; left: 0; }
+
+        /* COMMON SECTION STYLES */
+        section { padding: 100px 5%; max-width: 1200px; margin: 0 auto; position: relative; }
+        .section-title { text-align: center; font-size: 2.5rem; margin-bottom: 50px; text-transform: uppercase; }
+        .grid { display: grid; gap: 30px; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-block;
+            background: var(--cta-orange);
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(224, 122, 95, 0.4);
+        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 0 25px rgba(224, 122, 95, 0.6); }
+
+        /* HOME / HERO */
+        #home { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .badge { background: var(--cta-orange); padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; margin-bottom: 20px; animation: pulse 2s infinite; }
+        .hero-title { font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
+        .hero-subtitle { font-size: 1.2rem; max-width: 600px; margin-bottom: 30px; opacity: 0.9; }
+        .countdown { font-family: monospace; font-size: 2.5rem; color: var(--cta-orange); background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid var(--petroleo); }
+        .vagas-text { margin-top: 15px; font-size: 0.9rem; font-weight: 600; }
+        .vagas-number { color: var(--cta-orange); transition: 0.3s; }
+
+        /* CARDS */
+        .card { background: var(--card-bg); border: 1px solid var(--petroleo); padding: 30px; border-radius: 8px; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); background: rgba(15, 76, 92, 0.4); }
+        .card h3 { margin-bottom: 15px; color: var(--cta-orange); }
+
+        /* ACCORDION (FAQ/MODULOS) */
+        details { background: var(--card-bg); border: 1px solid var(--petroleo); margin-bottom: 10px; border-radius: 5px; }
+        summary { padding: 15px; font-weight: 600; cursor: pointer; list-style: none; outline: none; }
+        summary::-webkit-details-marker { display: none; }
+        details p, details ul { padding: 0 15px 15px; opacity: 0.9; }
+
+        /* FORMS */
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(0,0,0,0.2); border: 1px solid var(--petroleo); color: var(--text-light); border-radius: 4px; font-family: 'Open Sans'; }
+        
+        /* ANIMATIONS */
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); }
+        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 800px; background: #000; }
+        .close { color: white; position: absolute; top: -30px; right: 0; font-size: 28px; font-weight: bold; cursor: pointer; }
+        iframe { width: 100%; height: 450px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .grid-3, .grid-2 { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2.5rem; }
+            nav ul { display: none; /* Simplificação para mobile, idealmente um hamburger menu */ }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <nav>
+        <div class="logo">URSA<span>.</span></div>
+        <ul>
+            <li><a href="#problema">O Problema</a></li>
+            <li><a href="#solucao">O Bootcamp</a></li>
+            <li><a href="#sentinel">Projeto Sentinel-X</a></li>
+            <li><a href="#planos">Planos</a></li>
+            <li><a href="#sobre">Sobre Nós</a></li>
+        </ul>
+    </nav>
+
+    <section id="home">
+        <div class="badge">🔥 LANÇAMENTO EXCLUSIVO</div>
+        <h1 class="hero-title">DO ZERO AO PROJETO REAL:<br>SISTEMAS EMBARCADOS COM ESP32</h1>
+        <p class="hero-subtitle">Aprenda programação embedded construindo um sistema de emergência real que SALVA VIDAS.</p>
+        
+        <p style="font-weight: 600;">⏳ ÚLTIMAS 48 HORAS PARA O PREÇO DE LANÇAMENTO</p>
+        <div id="countdown" class="countdown">47:23:15</div>
+        
+        <a href="#planos" class="btn">GARANTIR MINHA VAGA - R$ 197</a>
+        <p class="vagas-text">Vagas limitadas: <span id="vagas-restantes" class="vagas-number">47</span>/50</p>
+        <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">✓ 8 semanas | ✓ Projeto real | ✓ Certificado</p>
+    </section>
+
+    <section id="problema" class="fade-in">
+        <h2 class="section-title">Você já passou por isso?</h2>
+        <div class="grid grid-3">
+            <div class="card">
+                <h3>📚 Teoria Demais</h3>
+                <p>Cursos focados 80% em teoria e slides. Você termina sem saber como ligar um LED num protoboard sozinho.</p>
+            </div>
+            <div class="card">
+                <h3>🔌 Nunca Funciona</h3>
+                <p>Tenta reproduzir tutoriais do YouTube, dá erro de compilação, o sensor não lê e você desiste por falta de suporte.</p>
+            </div>
+            <div class="card">
+                <h3>📄 Currículo Defasado</h3>
+                <p>O mercado exige IoT, MQTT e baixo consumo. A faculdade te ensina assembly em microcontroladores de 1990.</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <h3 style="color: var(--cta-orange);">O mercado precisa de engenheiros que FAZEM, não que repetem fórmulas.</h3>
+        </div>
+    </section>
+
+    <section id="solucao" class="fade-in">
+        <h2 class="section-title">A única formação que te leva ao projeto real</h2>
+        <div class="grid grid-2">
+            <div>
+                <details>
+                    <summary>MÓDULO 1: FUNDAMENTOS (2 semanas)</summary>
+                    <ul>
+                        <li>Arquitetura ESP32 (por dentro do chip)</li>
+                        <li>Configuração de ambiente profissional</li>
+                        <li>Primeiro código: "Hello World" do embedded</li>
+                        <li>Debug e troubleshooting real</li>
+                    </ul>
+                </details>
+                <details>
+                    <summary>MÓDULO 2: SENSORES E ATUADORES (2 semanas)</summary>
+                    <ul>
+                        <li>Leitura de sensores analógicos/digitais</li>
+                        <li>Controle de motores e servo</li>
+                        <li>Comunicação I2C, SPI, UART</li>
+                        <li>Calibração e precisão de medida</li>
+                    </ul>
+                </details>
+                <details>
+                    <summary>MÓDULO 3: COMUNICAÇÃO SEM FIO (2 semanas)</summary>
+                    <ul>
+                        <li>WiFi: criar redes e conectar à internet</li>
+                        <li>LoRa: comunicação de longo alcance</li>
+                        <li>Protocolos MQTT e HTTP</li>
+                        <li>Segurança em IoT (AES-256)</li>
+                    </ul>
+                </details>
+                <details open>
+                    <summary>MÓDULO 4: PROJETO SENTINEL-X (2 semanas)</summary>
+                    <ul>
+                        <li>Sistema completo de emergência</li>
+                        <li>3 sensores + atuador + comunicação</li>
+                        <li>Modo de baixo consumo (bateria)</li>
+                        <li>Código profissional + documentação</li>
+                    </ul>
+                </details>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <button class="btn" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ')">▶ VER PROJETO EM AÇÃO</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="sentinel" class="fade-in">
+        <h2 class="section-title">🔥 O PROJETO QUE MUDA O JOGO</h2>
+        <div class="grid grid-2">
+            <div style="background: rgba(0,0,0,0.5); border: 1px solid var(--petroleo); border-radius: 8px; display: flex; align-items: center; justify-content: center; min-height: 300px;">
+                <p style="opacity: 0.5;">[IMAGEM DO SENTINEL-X - PROTÓTIPO REAL]</p>
+            </div>
+            <div>
+                <h3 style="margin-bottom: 20px; font-size: 1.8rem;">SISTEMA DE EMERGÊNCIA RESILIENTE</h3>
+                <ul style="list-style: none; margin-bottom: 30px;">
+                    <li style="margin-bottom: 10px;">✔ Detecta presença humana em áreas de risco</li>
+                    <li style="margin-bottom: 10px;">✔ Envia alertas via LoRa (3km de alcance)</li>
+                    <li style="margin-bottom: 10px;">✔ Funciona 72h com energia solar</li>
+                    <li style="margin-bottom: 10px;">✔ Tem proteção anti-jamming (militar)</li>
+                </ul>
+                <blockquote style="border-left: 4px solid var(--cta-orange); padding-left: 15px; font-style: italic;">
+                    "Isso não é um projetinho de faculdade. É um sistema que vou usar na Defesa Civil da minha cidade."<br>
+                    <span style="font-size: 0.8rem; font-weight: bold; font-style: normal;">— Aluno da turma anterior</span>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <section class="fade-in">
+        <div class="grid grid-2">
+            <div>
+                <h2 style="font-family: 'Inter'; margin-bottom: 20px;">ESTE BOOTCAMP É PARA VOCÊ SE:</h2>
+                <ul style="list-style: none; opacity: 0.9;">
+                    <li>✔ É estudante de engenharia (qualquer área)</li>
+                    <li>✔ Já teve contato com programação básica</li>
+                    <li>✔ Quer um portfólio técnico de verdade</li>
+                    <li>✔ Está cansado de curso teórico sem aplicação</li>
+                </ul>
+            </div>
+            <div>
+                <h2 style="font-family: 'Inter'; margin-bottom: 20px;">NÃO É PARA VOCÊ SE:</h2>
+                <ul style="list-style: none; opacity: 0.9;">
+                    <li>✘ Nunca programou na vida</li>
+                    <li>✘ Quer só certificado sem esforço</li>
+                    <li>✘ Acha que vai virar expert em 1 semana</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="planos" class="fade-in">
+        <h2 class="section-title">ESCOLHA SEU CAMINHO</h2>
+        <div class="grid grid-3">
+            <div class="card" style="text-align: center;">
+                <h3>ASSINATURA MENSAL</h3>
+                <p style="font-size: 2rem; font-family: 'Inter'; font-weight: 800; margin: 20px 0;">R$ 47<span style="font-size: 1rem;">/mês</span></p>
+                <ul style="list-style: none; text-align: left; margin-bottom: 20px; opacity: 0.9;">
+                    <li>✓ Acesso a TODOS os cursos</li>
+                    <li>✓ Conteúdo novo mensal</li>
+                </ul>
+                <a href="#" class="btn" style="width: 100%; font-size: 0.9rem;">ASSINAR</a>
+            </div>
+            
+            <div class="card" style="text-align: center; border-color: var(--cta-orange); transform: scale(1.05); position: relative;">
+                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--cta-orange); padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem;">MAIS ESCOLHIDO</div>
+                <h3>BOOTCAMP COMPLETO</h3>
+                <p style="text-decoration: line-through; opacity: 0.5;">R$ 597</p>
+                <p style="font-size: 2.5rem; font-family: 'Inter'; font-weight: 800; color: var(--cta-orange); margin: 0 0 20px 0;">R$ 197</p>
+                <ul style="list-style: none; text-align: left; margin-bottom: 20px; opacity: 0.9;">
+                    <li>✓ 8 semanas de conteúdo</li>
+                    <li>✓ Projeto Sentinel-X</li>
+                    <li>✓ Comunidade no Discord</li>
+                </ul>
+                <a href="#" class="btn" style="width: 100%;">GARANTIR VAGA</a>
+                <p style="font-size: 0.8rem; margin-top: 15px;">🔒 7 dias de garantia</p>
+            </div>
+
+            <div class="card" style="text-align: center;">
+                <h3>COMBO PREMIUM</h3>
+                <p style="font-size: 2rem; font-family: 'Inter'; font-weight: 800; margin: 20px 0;">R$ 297</p>
+                <ul style="list-style: none; text-align: left; margin-bottom: 20px; opacity: 0.9;">
+                    <li>✓ Bootcamp Completo</li>
+                    <li>✓ Kit de componentes</li>
+                    <li>✓ Mentoria 1:1</li>
+                </ul>
+                <a href="#" class="btn" style="width: 100%; font-size: 0.9rem;">COMPRAR COMBO</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="fade-in">
+        <h2 class="section-title">PERGUNTAS FREQUENTES</h2>
+        <div style="max-width: 800px; margin: 0 auto;">
+            <details>
+                <summary>Preciso ter hardware para começar?</summary>
+                <p>Não! Fornecemos uma lista de componentes acessíveis (R$ 150-200) e ensinamos a usar um simulador gratuito caso não queira comprar nada agora.</p>
+            </details>
+            <details>
+                <summary>Qual a carga horária?</summary>
+                <p>O bootcamp dura 8 semanas, exigindo cerca de 6 a 8 horas por semana. Totalizando 64 horas de curso intenso e prático.</p>
+            </details>
+            <details>
+                <summary>E se eu não conseguir acompanhar?</summary>
+                <p>Você tem acesso vitalício ao material e à comunidade do Discord. Aprenda no seu próprio ritmo.</p>
+            </details>
+        </div>
+    </section>
+
+    <section id="sobre" class="fade-in">
+        <div class="card" style="background: rgba(10, 17, 40, 0.8);">
+            <h2 class="section-title" style="margin-bottom: 20px; font-size: 2rem;">QUEM SOMOS</h2>
+            <p style="margin-bottom: 20px;">A URSA University nasceu de uma constatação simples: a engenharia ensinada na faculdade NÃO é a engenharia que o mercado precisa. Fundada por <strong>Tauã</strong>, a URSA tem a missão de DEMOCRATIZAR o conhecimento técnico de ponta no Brasil.</p>
+            
+            <div class="grid grid-3" style="text-align: center; margin: 40px 0;">
+                <div><h3 style="font-size: 2.5rem; color: var(--cta-orange);">150+</h3><p>Alunos Formados</p></div>
+                <div><h3 style="font-size: 2.5rem; color: var(--cta-orange);">4</h3><p>Projetos Open Source</p></div>
+                <div><h3 style="font-size: 2.5rem; color: var(--cta-orange);">2</h3><p>Artigos Publicados</p></div>
+            </div>
+
+            <h4>NOSSO MANIFESTO:</h4>
+            <ul style="list-style-type: square; margin-left: 20px; margin-top: 10px; opacity: 0.9;">
+                <li>Código aberto é o padrão, não exceção.</li>
+                <li>Teoria sem prática é entretenimento.</li>
+                <li>Tecnologia cara é tecnologia inútil.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="contato" class="fade-in">
+        <h2 class="section-title">FALE COM A GENTE</h2>
+        <div class="grid grid-2">
+            <div>
+                <p style="margin-bottom: 15px;">📧 Email: suporte@ursauniversity.tech</p>
+                <p style="margin-bottom: 15px;">💬 Discord: discord.gg/ursauniversity</p>
+                <p style="margin-bottom: 15px;">📱 WhatsApp: (82) 9XXXX-XXXX</p>
+                <p style="margin-bottom: 15px;">📍 Base: Maceió - AL</p>
+            </div>
+            <div>
+                <form id="lead-form">
+                    <input type="text" id="nome" placeholder="Seu Nome" required>
+                    <input type="email" id="email" placeholder="Seu Email" required>
+                    <textarea placeholder="Sua Mensagem" rows="4" required></textarea>
+                    <button type="submit" class="btn" style="width: 100%;">ENVIAR MENSAGEM</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="videoContainer"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // SCRIPT 1: COUNTER REGRESSIVO
+        function startCountdown(durationInHours) {
+            const endTime = new Date().getTime() + durationInHours * 60 * 60 * 1000;
+            const timer = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+                
+                if (distance < 0) {
+                    clearInterval(timer);
+                    document.getElementById("countdown").innerHTML = "00:00:00 (EXPIRADO)";
+                    return;
+                }
+
+                const hours = Math.floor(distance / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById("countdown").innerHTML = 
+                    `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+        startCountdown(48); // Inicia contador de 48 horas
+
+        // SCRIPT 2: ANIMAÇÃO DE PARTÍCULAS
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: '#0F4C5C' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: '#0F4C5C', opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 2 }
+            },
+            interactivity: {
+                events: { onhover: { enable: true, mode: "grab" } }
+            }
+        });
+
+        // SCRIPT 3: CONTADOR DE VAGAS DINÂMICO
+        let vagasRestantes = 47;
+        const vagasElement = document.getElementById('vagas-restantes');
+        setInterval(() => {
+            if (vagasRestantes > 12 && Math.random() > 0.8) { // Não desce de 12 para simular escassez real
+                vagasRestantes--;
+                vagasElement.textContent = vagasRestantes;
+                vagasElement.style.color = '#F4F1DE';
+                setTimeout(() => vagasElement.style.color = '#E07A5F', 300);
+            }
+        }, 15000);
+
+        // SCRIPT 4: SCROLL ANIMADO
+        window.addEventListener('scroll', function() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const position = element.getBoundingClientRect();
+                if (position.top < window.innerHeight - 50) {
+                    element.classList.add('visible');
+                }
+            });
+        });
+        // Dispara uma vez no load
+        window.dispatchEvent(new Event('scroll'));
+
+        // SCRIPT 5: VALIDAÇÃO DE FORMULÁRIO (Contato/Lead)
+        document.getElementById('lead-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            // Validação simples
+            if(email.includes('@') && email.includes('.')) {
+                alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
+                this.reset();
+            } else {
+                alert('Por favor, insira um e-mail válido.');
+            }
+        });
+
+        // SCRIPT 6: MODAL DE VÍDEO
+        const modal = document.getElementById("videoModal");
+        const videoContainer = document.getElementById("videoContainer");
+
+        function openVideoModal(videoUrl) {
+            videoContainer.innerHTML = `<iframe src="${videoUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+            videoContainer.innerHTML = ''; // Para o vídeo ao fechar
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
+
