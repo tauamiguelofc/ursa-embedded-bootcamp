@@ -25,3 +25,62 @@ Converter visitantes em alunos através de um design moderno, responsivo e estra
 
 ## 📁 ESTRUTURA DE ARQUIVOS
 
+```
+
+ursa-embedded-bootcamp/
+├── index.html          # Página principal
+├── README.md           # Documentação
+└── .gitignore          # Arquivos ignorados
+
+```
+
+## 🚀 COMO EXECUTAR LOCALMENTE
+
+```bash
+# Clone o repositório
+git clone https://github.com/tauamiguelofc/ursa-embedded-bootcamp.git
+
+# Entre na pasta
+cd ursa-embedded-bootcamp
+
+# Abra o index.html no navegador
+# (no Termux, use:)
+termux-open index.html
+```
+
+📱 RESPONSIVIDADE
+
+O site funciona perfeitamente em:
+
+· Desktop (1920x1080)
+· Tablet (768x1024)
+· Mobile (375x667)
+
+🔧 FUNCIONALIDADES
+
+· Contador regressivo em tempo real
+· Animações de partículas
+· Formulário de captura de leads
+· Scroll animado
+· Modal de vídeo
+
+🌐 ACESSO AO SITE
+
+GitHub Pages: https://tauamiguelofc.github.io/ursa-embedded-bootcamp
+
+📄 LICENÇA
+
+MIT License - use, modifique e compartilhe!
+
+📞 CONTATO
+
+· 📧 Email: tauamiguel77@gmail.com
+· 💬 Discord: URSA Community
+· 📱 Instagram: @ursa.university
+
+---
+
+URSA University - Democratizando a engenharia de ponta no Brasil 🇧🇷
+
+```
+
